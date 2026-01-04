@@ -1,0 +1,21 @@
+name: Sync to Hugo Blog
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Obsidian Notes
+        uses: actions/checkout@v4
+
+      - name: Trigger Hugo Blog Update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.HUGO_REPO_TOKEN }}
+          repository: ${{ github.repository_owner }}/my-blog
+          event-type: sync-content
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
